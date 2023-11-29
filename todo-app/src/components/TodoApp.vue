@@ -22,7 +22,7 @@
       <tbody>
         <tr v-for="(task, index) in tasks" :key="index">
           <!-- lặp qua một mảng các tasks và render ra các phần tử tương ứng -->
-          <th>{{ task.name }}</th>
+          <td>{{task.name}}</td>
           <td>{{task.status}}</td>
           <td>
             <div class="text-center" @click="editTask(index)">
@@ -69,7 +69,7 @@ export default {
     submitTask(){
       if(this.task.length === 0) return;
 
-      if(this.editTask === null){
+      if(this.editedTask === null){
         this.tasks.push({
           name: this.task,
           status: 'To do'
