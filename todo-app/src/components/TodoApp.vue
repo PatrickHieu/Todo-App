@@ -1,16 +1,16 @@
 <template>
-  <div class="container">
-    <h2 class="text-center margin-top">ToDo List</h2>
+  <div class="container" style="max-width: 600px;">
+    <h2 class="text-center mt-5">ToDo List</h2>
 
     <!-- input -->
-    <div class="flex">
-      <input v-model="task" type="text" placeholder="Enter task" class="form-control">
+    <div class="d-flex mt-5">
+      <input v-model="task" type="text" placeholder="Enter task" class="form-control w-100">
       <!-- tạo input box cho phép user nhập nội dung và lưu vào biến task thông qua directive "v-model" -->
-      <button @click="submitTask" class="btn btn-warn rounded">SUBMIT</button>
+      <button @click="submitTask" class="btn btn-warning rounded-0">SUBMIT</button>
     </div>
 
     <!-- Task Table -->
-    <table class="table table-bordered margin-top">
+    <table class="table table-bordered mt-5">
       <thead>
         <tr>
           <th scope="col">Task</th>
@@ -22,8 +22,20 @@
       <tbody>
         <tr v-for="(task, index) in tasks" :key="index">
           <!-- lặp qua một mảng các tasks và render ra các phần tử tương ứng -->
-          <td>{{task.name}}</td>
-          <td>{{task.status}}</td>
+          <td>
+            <span :class="{'finished': task.status === 'Finished'}">
+              {{task.name}}
+            </span>
+          </td>
+          <td style="width: 120px;">
+            <span @click="changeStatus(index)" class="pointer" 
+              :class="{'text-danger': task.status === 'To do',
+              'text-warning': task.status === 'In progress'
+              }"
+            >
+              {{task.status}}
+            </span>
+          </td>
           <td>
             <div class="text-center" @click="editTask(index)">
               <span class="fa fa-pen"></span>
@@ -51,6 +63,7 @@ export default {
     return {
       task: '',
       editedTask: null,
+      statuses: ["To do", "In progress", "Finished"],
 
       tasks: [
         {
@@ -89,6 +102,12 @@ export default {
     editTask(index){
       this.task = this.tasks[index].name;
       this.editedTask = index;
+    },
+
+    changeStatus(index){
+      let newIndex = this.statuses.indexOf(this.tasks[index].status);
+      if (++newIndex > 2) newIndex = 0;
+      this.tasks[index].status = this.statuses[newIndex];
     }
   }
 };
@@ -96,5 +115,12 @@ export default {
 
 
 <style scoped>
+  .pointer {
+    cursor: pointer;
+  }
+
+  .finished {
+    text-decoration: line-through;
+  }
 
 </style>
