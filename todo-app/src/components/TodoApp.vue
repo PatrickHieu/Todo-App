@@ -4,9 +4,9 @@
 
     <!-- input -->
     <div class="d-flex mt-5">
-      <input v-model="task" type="text" placeholder="Enter task" class="form-control w-100">
+      <input v-model="task" @keyup.enter="submitTask" type="text" placeholder="Enter task" class="form-control w-100">
       <!-- tạo input box cho phép user nhập nội dung và lưu vào biến task thông qua directive "v-model" -->
-      <button @click="submitTask" class="btn btn-warning rounded-0">SUBMIT</button>
+      <button type="submit" @click="submitTask" class="btn btn-warning rounded-0">SUBMIT</button>
     </div>
 
     <!-- Task Table -->
@@ -91,8 +91,8 @@ export default {
         this.tasks[this.editedTask].name = this.task;
         this.editedTask = null;
       }
-
       this.task = '';
+      return console.log(this.tasks);
     },
 
     deleteTask(index){
@@ -108,7 +108,7 @@ export default {
       let newIndex = this.statuses.indexOf(this.tasks[index].status);
       if (++newIndex > 2) newIndex = 0;
       this.tasks[index].status = this.statuses[newIndex];
-    }
+    },
   }
 };
 </script>
