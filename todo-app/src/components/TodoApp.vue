@@ -78,9 +78,20 @@ export default {
     }
   },
 
-  methods: {
+ methods: {
+    existTask() {
+      const existingTask = this.tasks.find(t => t.name.toLowerCase() === this.task.toLowerCase());
+      if (existingTask) {
+        alert('Task already exist in your to do list');
+        return true;
+      }
+      return false;
+    },
+
     submitTask(){
       if(this.task.length === 0) return;
+
+      if(this.existTask()) return;
 
       if(this.editedTask === null){
         this.tasks.push({
@@ -111,7 +122,7 @@ export default {
     },
   }
 };
-</script>
+</script> 
 
 
 <style scoped>
@@ -122,5 +133,6 @@ export default {
   .finished {
     text-decoration: line-through;
   }
+
 
 </style>
