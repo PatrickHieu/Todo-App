@@ -8,9 +8,16 @@
       <!-- tạo input box cho phép user nhập nội dung và lưu vào biến task thông qua directive "v-model" -->
       <button type="submit" @click="submitTask" class="btn btn-warning rounded-0">SUBMIT</button>
     </div>
+    <!-- alert -->
+    <div class="alert alert-warning alert-dismissible fade " :class="{ 'show': condition }" role="alert">
+        <strong>Task already exist in your to do list!</strong> Please submit new task.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 
     <!-- Task Table -->
-    <table class="table table-bordered mt-5">
+    <table class="table table-bordered mt-5 table-none-margin">
       <thead>
         <tr>
           <th scope="col">Task</th>
@@ -64,6 +71,7 @@ export default {
       task: '',
       editedTask: null,
       statuses: ["To do", "In progress", "Finished"],
+      condition: false,
 
       tasks: [
         {
@@ -78,11 +86,10 @@ export default {
     }
   },
 
- methods: {
+  methods: {
     existTask() {
       const existingTask = this.tasks.find(t => t.name.toLowerCase() === this.task.toLowerCase());
       if (existingTask) {
-        alert('Task already exist in your to do list');
         return true;
       }
       return false;
@@ -91,7 +98,12 @@ export default {
     submitTask(){
       if(this.task.length === 0) return;
 
-      if(this.existTask()) return;
+      if(this.existTask()){
+        this.condition = true;
+        return;
+      }else {
+        this.condition = false;
+      }
 
       if(this.editedTask === null){
         this.tasks.push({
@@ -134,5 +146,12 @@ export default {
     text-decoration: line-through;
   }
 
-
+  .alert {
+    /* padding: 0; */
+    margin: 0;
+    /* border: 0; */
+  }
+  .table-none-margin {
+    margin-top: 0 !important;
+  }
 </style>
