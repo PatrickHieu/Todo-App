@@ -4,12 +4,14 @@
 
     <!-- input -->
     <div class="d-flex mt-5">
-      <input v-model="task" @keyup.enter="submitTask" type="text" placeholder="Enter task" class="form-control w-100">
-      <!-- tạo input box cho phép user nhập nội dung và lưu vào biến task thông qua directive "v-model" -->
-      <button type="submit" @click="submitTask" class="btn btn-color rounded-0">SUBMIT</button>
+      <form>
+        <input v-model="task" @keyup.enter="submitTask" type="text" placeholder="Enter task" class="form-control w-100" @input="onInput">
+        <!-- tạo input box cho phép user nhập nội dung và lưu vào biến task thông qua directive "v-model" -->
+        <button type="submit" @click="submitTask" class="btn btn-color rounded-0">SUBMIT</button>
+      </form>
     </div>
     <!-- alert -->
-    <div class="alert alert-warning alert-dismissible fade " :class="{ 'show': condition }" role="alert">
+    <div class="alert alert-warning alert-dismissible fade" :class="{ 'show': condition }" role="alert">
         <strong>Task already exist in your to do list!</strong> Please submit new task.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -57,11 +59,11 @@
       </tbody>
     </table>
     <div>
-      <button class="btn btn-right btn-color" @click="undoTask" :disabled="undoDisabled">
+      <button class="btn btn-right btn-color" @click="undoTask" :disabled ="undoDisabled">
         UNDO
         <span class="fa fa-undo"></span>
       </button>
-      <button class="btn btn-left btn-color" @click="redoTask" :disabled="redoDisabled">
+      <button class="btn btn-left btn-color" @click="redoTask" :disabled ="redoDisabled">
         REDO
         <span class="fa fa-redo"></span>
       </button>
@@ -168,11 +170,18 @@ export default {
         this.tasks = this.history[this.currentIndex];
       }
     },
+
+    onInput() {
+      // Save the current state to history
+      this.history = this.history.slice(0, this.currentIndex + 1);
+      this.history.push(this.text);
+      this.currentIndex = this.history.length - 1;
+    },
   }
 };
 </script> 
 
-  
+
 <style scoped>
   .pointer {
     cursor: pointer;
