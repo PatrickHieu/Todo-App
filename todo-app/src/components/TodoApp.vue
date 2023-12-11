@@ -6,7 +6,7 @@
     <div class="d-flex mt-5">
       <input v-model="task" @keyup.enter="submitTask" type="text" placeholder="Enter task" class="form-control w-100">
       <!-- tạo input box cho phép user nhập nội dung và lưu vào biến task thông qua directive "v-model" -->
-      <button type="submit" @click="submitTask" class="btn btn-warning rounded-0">SUBMIT</button>
+      <button type="submit" @click="submitTask" class="btn btn-color rounded-0">SUBMIT</button>
     </div>
     <!-- alert -->
     <div class="alert alert-warning alert-dismissible fade " :class="{ 'show': condition }" role="alert">
@@ -56,6 +56,16 @@
         </tr>
       </tbody>
     </table>
+    <div>
+      <button class="btn btn-right btn-color" @click="undoTask" :disabled="undoDisabled">
+        UNDO
+        <span class="fa fa-undo"></span>
+      </button>
+      <button class="btn btn-left btn-color" @click="redoTask" :disabled="redoDisabled">
+        REDO
+        <span class="fa fa-redo"></span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -72,6 +82,8 @@ export default {
       editedTask: null,
       statuses: ["To do", "In progress", "Finished"],
       condition: false,
+      history: [],
+      currentIndex: -1,
 
       tasks: [
         {
@@ -84,6 +96,15 @@ export default {
         },       
       ]
     }
+  },
+
+  computed: {
+    undoDisabled() {
+      return this.currentIndex <= 0;
+    },
+    redoDisabled() {
+      return this.currentIndex >= this.history.length - 1;
+    },
   },
 
   methods: {
@@ -116,6 +137,7 @@ export default {
       }
       this.task = '';
       return console.log(this.tasks);
+
     },
 
     deleteTask(index){
@@ -132,11 +154,25 @@ export default {
       if (++newIndex > 2) newIndex = 0;
       this.tasks[index].status = this.statuses[newIndex];
     },
+
+    undoTask() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.tasks = this.history[this.currentIndex];
+      }
+    },
+
+    redoTask() {
+      if (this.currentIndex < this.history.length - 1) {
+        this.currentIndex++;
+        this.tasks = this.history[this.currentIndex];
+      }
+    },
   }
 };
 </script> 
 
-
+  
 <style scoped>
   .pointer {
     cursor: pointer;
@@ -154,4 +190,22 @@ export default {
   .table-none-margin {
     margin-top: 0 !important;
   }
+
+  .btn-left {
+    float: right;
+  }
+
+  .btn-right {
+    float: left;
+  }
+
+  .btn-color {
+    background-color: #ccc;
+  }
+
+  .btn-color:hover {
+    background-color: #555;
+    color: white;
+  }
+  
 </style>
