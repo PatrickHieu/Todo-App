@@ -4,14 +4,12 @@
 
     <!-- input -->
     <div class="d-flex mt-5">
-      <form>
-        <input v-model="task" @keyup.enter="submitTask" type="text" placeholder="Enter task" class="form-control w-100" @input="onInput">
+        <input v-model="task" @keyup.enter="submitTask" type="text" placeholder="Enter task" class="form-control w-100">
         <!-- tạo input box cho phép user nhập nội dung và lưu vào biến task thông qua directive "v-model" -->
         <button type="submit" @click="submitTask" class="btn btn-color rounded-0">SUBMIT</button>
-      </form>
     </div>
     <!-- alert -->
-    <div class="alert alert-warning alert-dismissible fade" :class="{ 'show': condition }" role="alert">
+    <div class="alert alert-warning alert-dismissible fade" :class="{ 'show': isExistTask() }" role="alert">
         <strong>Task already exist in your to do list!</strong> Please submit new task.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -59,11 +57,11 @@
       </tbody>
     </table>
     <div>
-      <button class="btn btn-right btn-color" @click="undoTask" :disabled ="undoDisabled">
+      <button class="btn btn-right btn-color" @click="undoTask" :disabled ="!undoDisabled">
         UNDO
         <span class="fa fa-undo"></span>
       </button>
-      <button class="btn btn-left btn-color" @click="redoTask" :disabled ="redoDisabled">
+      <button class="btn btn-left btn-color" @click="redoTask" :disabled ="!redoDisabled">
         REDO
         <span class="fa fa-redo"></span>
       </button>
@@ -73,17 +71,12 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  },
 
   data(){
     return {
       task: '',
       editedTask: null,
       statuses: ["To do", "In progress", "Finished"],
-      condition: false,
       history: [],
       currentIndex: -1,
 
@@ -101,7 +94,8 @@ export default {
   },
 
   computed: {
-    undoDisabled() {
+    undoDisabled(){
+      console.log(this.currentIndex <=0)
       return this.currentIndex <= 0;
     },
     redoDisabled() {
@@ -110,23 +104,14 @@ export default {
   },
 
   methods: {
-    existTask() {
-      const existingTask = this.tasks.find(t => t.name.toLowerCase() === this.task.toLowerCase());
-      if (existingTask) {
-        return true;
-      }
-      return false;
+    isExistTask() {
+      return this.tasks.find(item => item.name.toLowerCase() === this.task.toLowerCase());
     },
 
     submitTask(){
       if(this.task.length === 0) return;
 
-      if(this.existTask()){
-        this.condition = true;
-        return;
-      }else {
-        this.condition = false;
-      }
+      if(this.isExistTask()) return;
 
       if(this.editedTask === null){
         this.tasks.push({
@@ -138,8 +123,6 @@ export default {
         this.editedTask = null;
       }
       this.task = '';
-      return console.log(this.tasks);
-
     },
 
     deleteTask(index){
